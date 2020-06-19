@@ -1,20 +1,22 @@
 package org.vtb.web;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(TestWatcher.class)
 public class FirstWebTest {
 
     private static WebDriver driver;
@@ -41,6 +43,7 @@ public class FirstWebTest {
 
     @Test
     void etsyPage2() {
+        etsyHomePage.executeJS("alert('dkjshkjsdhfksdjh')");
         etsyHomePage.searchFor("очки");
         searchResultPage.waitPageOpened();
         searchResultPage.printChkBoxText(0);
@@ -52,14 +55,17 @@ public class FirstWebTest {
         assertAll(
                 ()->etsyHomePage.getGoogleButton().isDisplayed(),
                 ()->etsyHomePage.getFacebookButton().isDisplayed());
+        etsyHomePage.closeSignInWindow();
     }
 
     @Test
-    void registrationSwitch(){
+    void registrationSwitch() throws IOException {
         etsyHomePage.clickButton("Sign In");
         assertAll(
                 ()->assertTrue(etsyHomePage.isElementDisplayed( "Google")),
                 ()->assertTrue(etsyHomePage.isElementDisplayed("Facebook")));
+        etsyHomePage.closeSignInWindow();
+        searchResultPage.screenSh();
     }
 
     @Test
@@ -68,6 +74,7 @@ public class FirstWebTest {
         assertAll(
                 ()->assertTrue(etsyHomePage.isElementDisplayedMap( "Google")),
                 ()->assertTrue(etsyHomePage.isElementDisplayedMap("Facebook")));
+        etsyHomePage.closeSignInWindow();
     }
 
     @Test
@@ -76,6 +83,26 @@ public class FirstWebTest {
                 .waitPageOpened()
                 .checkSortAttribute("wt-menu__trigger__label");
         searchResultPage.checkCollectionSize(30);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Ободк", "Очки"})
+    void submenuTest(String sm){
+        etsyHomePage.openSubmenu(sm);
+        searchResultPage.waitPageOpened();
+    }
+
+    @Test
+    @Disabled
+    void openGoogle(){
+        etsyHomePage.openNewTab();
+        etsyHomePage.navigateToNewTab(1);
+        driver.navigate().to("http://google.com");
+    }
+
+    @AfterEach
+    void clickLogo(){
+        etsyHomePage.clickLogo();
     }
 
     @AfterAll

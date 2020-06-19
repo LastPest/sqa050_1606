@@ -1,16 +1,19 @@
 package org.vtb.web;
 
 import lombok.Getter;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 /*approach 1
 public class EtsyHomePage {
@@ -68,6 +71,12 @@ public class EtsyHomePage extends BasePage{
     @FindBy(xpath = "//input[@name=\"facebook_access_token\"]/following-sibling::button")
     private WebElement facebookButton;
 
+    @FindBy(tagName = "header")
+    private WebElement header;
+
+    @FindBy(id = "join_neu_email_field")
+    private WebElement email;
+
     // approach 3
     By getLocator(String name){
         By obj = null;
@@ -104,4 +113,36 @@ public class EtsyHomePage extends BasePage{
         put("Facebook", By.xpath("//input[@name=\"facebook_access_token\"]/following-sibling::button"));
     }};
 
+    public void openSubmenu(String submenu){
+        Actions builder = new Actions(DriverFactory.driver);
+        builder.moveToElement(DriverFactory.driver.findElement(By.id("catnav-primary-link-10855"))).build().perform();
+        DriverFactory.waitVar.until(presenceOfElementLocated(By.partialLinkText(submenu)));
+        DriverFactory.driver.findElement(By.partialLinkText(submenu)).click();
+    }
+
+    public void clickLogo(){
+        header.findElement(By.xpath("./div/a/span[contains(@class, \"etsy-icon\")]")).click();
+    }
+
+    public void closeSignInWindow(){
+        email.sendKeys(Keys.ESCAPE);
+    }
+
+    public void executeJS(String script){
+        JavascriptExecutor jse = (JavascriptExecutor) DriverFactory.driver;
+        jse.executeScript(script);
+        DriverFactory.driver.switchTo().alert().accept();
+    }
+
+    public void openNewTab(){
+        JavascriptExecutor jse = (JavascriptExecutor) DriverFactory.driver;
+        jse.executeScript("window.open();");
+    }
+
+    public void navigateToNewTab(int i){
+        List<String> tabs = new ArrayList<>(DriverFactory.driver.getWindowHandles());
+        if(tabs.size()>1){
+            DriverFactory.driver.switchTo().window(tabs.get(i));
+        }
+    }
 }
