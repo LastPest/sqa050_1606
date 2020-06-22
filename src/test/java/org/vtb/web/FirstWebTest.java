@@ -48,7 +48,14 @@ public class FirstWebTest {
         searchResultPage.waitPageOpened();
         searchResultPage.printChkBoxText(0);
     }
-
+    
+   @Test
+    void etsyPage3() {
+        etsyHomePage.executeJS("alert('ничего нет')");
+        etsyHomePage.searchFor("очки");
+        searchResultPage.waitPageOpened();
+        searchResultPage.printChkBoxText(0);
+    }
     @Test
     void registrationButtons(){
         etsyHomePage.getSignInButton().click();
