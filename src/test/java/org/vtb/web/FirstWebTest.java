@@ -86,7 +86,7 @@ public class FirstWebTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"Ободк", "Очки"})
+    @ValueSource(strings = {"Ободок", "Очки"})
     void submenuTest(String sm){
         etsyHomePage.openSubmenu(sm);
         searchResultPage.waitPageOpened();
